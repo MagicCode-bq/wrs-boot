@@ -112,7 +112,13 @@ public class UploadController {
 
            //关闭流在栈中索引
            System.gc();
-           Log.info("删除分片文件开始");
+            try {
+            Thread.sleep(100);
+            } catch (InterruptedException e) {
+            e.printStackTrace();
+            }
+
+        Log.info("删除分片文件开始");
            for (int i = 1; i <=fileVo.getShardTotal();  i++) {
                File deleteFile = new File(fullpath + fileVo.getKey() + "." + fileVo.getSuffix() + "." + i);
                boolean result = deleteFile.delete();
