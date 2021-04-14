@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.lbq.wrsboot.mapper.MenuMapper">
+
+    <resultMap id="BaseResultMap" type="org.lbq.wrsboot.bean.Menu">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="url" column="url" jdbcType="VARCHAR"/>
+            <result property="path" column="path" jdbcType="VARCHAR"/>
+            <result property="component" column="component" jdbcType="VARCHAR"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="iconcls" column="iconCls" jdbcType="VARCHAR"/>
+            <result property="parentid" column="parentId" jdbcType="INTEGER"/>
+            <result property="enabled" column="enabled" jdbcType="BOOLEAN"/>
+        <association property="mate" javaType="org.lbq.wrsboot.bean.Mate">
+            <result property="keepalive" column="keepAlive" jdbcType="BOOLEAN"/>
+            <result property="requireauth" column="requireAuth" jdbcType="BOOLEAN"/>
+        </association>
+    </resultMap>
+
+
+    <resultMap id="BaseResultMap2" type="org.lbq.wrsboot.bean.Menu" extends="BaseResultMap" >
+        <collection property="children" ofType="org.lbq.wrsboot.bean.Menu">
+            <id property="id" column="id2" jdbcType="INTEGER"/>
+            <result property="url" column="url2" jdbcType="VARCHAR"/>
+            <result property="path" column="path2" jdbcType="VARCHAR"/>
+            <result property="component" column="component2" jdbcType="VARCHAR"/>
+            <result property="name" column="name2" jdbcType="VARCHAR"/>
+            <result property="iconcls" column="iconCls2" jdbcType="VARCHAR"/>
+            <result property="parentid" column="parentId2" jdbcType="INTEGER"/>
+            <result property="enabled" column="enabled2" jdbcType="BOOLEAN"/>
+            <association property="mate" javaType="org.lbq.wrsboot.bean.Mate">
+                <result property="keepalive" column="keepAlive2" jdbcType="BOOLEAN"/>
+                <result property="requireauth" column="requireAuth2" jdbcType="BOOLEAN"/>
+            </association>
+        </collection>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,url,path,
+        component,name,iconCls,
+        keepAlive,requireAuth,parentId,
+        enabled
+    </sql>
+    <select id="gteHrMenus" resultMap="BaseResultMap2">
+        SELECT DISTINCT
+            m1.*,
+            m2.id id2,
+            m2.path path2,
+            m2.component component2,
+            m2.name name2,
+            m2.iconCls iconCls2,
+            m2.keepAlive keepAlive2,
+            m2.requireAuth requireAuth2,
+            m2.parentId parentId2,
+            m2.enabled enabled2
+        FROM
+            menu m1,
+            menu m2,
+            menu_role mr,
+            role r,
+            hr_role hrr
+        WHERE
+            m1.id = m2.parentId
+          AND m2.enabled = TRUE
+          AND m2.id = mr.mid
+          AND mr.rid = r.id
+          AND r.id = hrr.rid
+          AND hrr.hrid = #{hrid}
+        ORDER BY
+            m1.id,
+            m2.id
+    </select>
+</mapper>

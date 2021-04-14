@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.lbq.wrsboot.mapper.FileMapper">
+
+    <resultMap id="BaseResultMap" type="org.lbq.wrsboot.bean.Files">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="path" column="path" jdbcType="VARCHAR"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="suffix" column="suffix" jdbcType="VARCHAR"/>
+            <result property="size" column="size" jdbcType="INTEGER"/>
+            <result property="user" column="user" jdbcType="VARCHAR"/>
+            <result property="createtime" column="createTime" jdbcType="VARCHAR"/>
+            <result property="updatetime" column="updateTime" jdbcType="VARCHAR"/>
+            <result property="shardindex" column="shardIndex" jdbcType="INTEGER"/>
+            <result property="shardsize" column="shardSize" jdbcType="INTEGER"/>
+            <result property="shardtotal" column="shardTotal" jdbcType="INTEGER"/>
+            <result property="filekey" column="filekey" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,'path','name',
+        suffix,size,'user',
+        createTime,updateTime,shardIndex,
+        shardSize,shardTotal,filekey
+    </sql>
+
+    <insert id="insertFile">
+        insert into file(path, name, suffix, size, user, createtime, updatetime,shardindex,shardsize,shardtotal,filekey)
+        values (#{path}, #{name}, #{suffix}, #{size}, #{user}, #{createtime}, #{updatetime},#{shardindex},#{shardsize},#{shardtotal},#{filekey})
+    </insert>
+
+    <update id="updateFile">
+        update file set
+        path=#{file.path},
+        name=#{file.name},
+        suffix=#{file.suffix},
+        size=#{file.size},
+        user=#{file.user},
+        createtime=#{file.createtime},
+        updatetime=#{file.updatetime},
+        shardindex=#{file.shardindex},
+        shardsize=#{file.shardsize},
+        shardtotal=#{file.shardtotal},
+        filekey=#{file.filekey}
+        where id=#{id}
+
+    </update>
+    <delete id="deleteFile" parameterType="int">
+        delete from file where id=#{id}
+    </delete>
+
+    <select id="queryAllFiles" resultMap="BaseResultMap">
+        select  f.* from  file f
+    </select>
+
+    <select id="queryFilesKey" resultMap="BaseResultMap">
+        select f.*  from file f WHERE f.fileKey=#{fileKey}
+    </select>
+</mapper>

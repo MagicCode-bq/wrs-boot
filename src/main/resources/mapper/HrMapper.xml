@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.lbq.wrsboot.mapper.HrMapper">
+
+    <resultMap id="BaseResultMap" type="org.lbq.wrsboot.bean.Hr">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="phone" column="phone" jdbcType="CHAR"/>
+            <result property="telephone" column="telephone" jdbcType="VARCHAR"/>
+            <result property="address" column="address" jdbcType="VARCHAR"/>
+            <result property="enabled" column="enabled" jdbcType="BOOLEAN"/>
+            <result property="username" column="username" jdbcType="VARCHAR"/>
+            <result property="password" column="password" jdbcType="VARCHAR"/>
+            <result property="userface" column="userface" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <resultMap id="HrRoleMap" type="org.lbq.wrsboot.bean.Hr"  extends="BaseResultMap">
+        <collection property="roles" ofType="org.lbq.wrsboot.bean.Role">
+            <id column="rid" property="id"></id>
+            <result column="rname" property="name"></result>
+            <result column="namezh" property="namezh"></result>
+        </collection>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,phone,telephone,address,enabled, username,password,userface,remark
+    </sql>
+
+    <select id="getHrRoleByUserName" parameterType="string"  resultMap="HrRoleMap">
+        SELECT
+            hr.*,
+            r.id rid,
+            r.`name` rname,
+            r.nameZh
+        FROM
+            hr
+                LEFT JOIN hr_role hrr ON hr.id = hrr.hrid
+                LEFT JOIN role r ON r.id = hrr.rid
+        WHERE
+            hr.username = #{username}
+    </select>
+</mapper>
